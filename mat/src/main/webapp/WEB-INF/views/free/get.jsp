@@ -74,19 +74,31 @@
 <script>
 function update_btn(t){
 	console.log("수정버튼");
+	let replyer = $('#replyer').val();
 	
 	let reply = $(t).data("reply");
 	let rno = $(t).data("rno");
-	let replyer = $(t).data("replyer");
+	let originalReplyer = $(t).data("replyer");
+	
+	if(!replyer){
+			alert("로그인 후 수정 가능합니다.");
+			return;
+		}
+		if(replyer != originalReplyer){
+        
+        alert("자신이 작성한 댓글만 수정이 가능합니다");
+        getList();
+        return;
+    }
 	
 	var commentsView = '';
 	commentsView += '<div id="rno'+rno+'">';
 	commentsView += '<form onsubmit="return false;">';
 	commentsView += '<div><button class="button small" id="update_reply">수정</button>';
 	commentsView += '<button class="button small cencel_btn" >취소</button></div>';
-	commentsView += '<input type="hidden" name="rno" id="rno" value="'+rno+'">';
+	commentsView += '<input type="hidden" name="rno" id="rno" value="'+rno+'"/>';
 	commentsView += '<div><textarea name="reply" id="reply2">'+reply+'</textarea></div>';
-	commentsView += '<div><input type=hidden id=replyer>아이디:'+replyer+'</input></div>';
+	commentsView += '<div><input type=hidden id=replyer value="'+replyer+'"/></div>';
 	commentsView += '</form>';
 	commentsView += '</div>';
 	
@@ -163,10 +175,9 @@ function getList(){
 				html += '<div style="display:none;" class="dropbtn">';
 				html += '<div><button data-reply="'+res.list[i].reply+'" data-rno="'+res.list[i].rno+'"';
 				html += 'data-replyer="'+res.list[i].replyer+'" class="button small" id="update_reply" onmousedown="update_btn(this);">수정</button></div>';
-				html += '<div><button class="button small" id="del_reply" >삭제</button></div>';
+				html += '<div><button data-rno="'+res.list[i].rno+'" data-replyer="'+res.list[i].replyer+'" class="button small" id="del_reply" >삭제</button></div>';
 				html += '</div>';
 				html += '</div>';
-				html += '<input type="hidden" name="rno" id="rno" value="'+res.list[i].rno+'">';
 				html += '</div>';
 				html += '<div><span>댓글 내용:'+res.list[i].reply+'</span></div>';
 				html += '<div><span>아이디:'+res.list[i].replyer+'</span>';
@@ -262,9 +273,11 @@ $(document).ready(function(){
 	
   	$(document).on("click","#update_reply",function(){
  		let rno = $('#rno').val();
+ 		console.log(rno);
  		let bno = '${board.bno}';
  		let reply = $("#reply2").val();
  		let replyer = $('#replyer').val();
+ 		console.log("댓글작성자:"+replyer);
  		
  		//console.log("uprno:"+rno);
  		//console.log("upbno:"+bno);
@@ -277,7 +290,7 @@ $(document).ready(function(){
  		if(reply == ''){
  			alert("댓글을 입력해주세요.");
  		} else if(replyer == ''){
- 			alert("댓글작성자를 입력해주세요.");
+ 			alert("로그인후에 수정가능합니다");
  		} else{
  			$.ajax({
 				type : "PUT",
@@ -302,21 +315,28 @@ $(document).ready(function(){
  	});
   	
   	$(document).on("click","#del_reply",function(){
-  		let rno = $('#rno').val();
+  		let rno = $(this).data("rno");
+  		//console.log("번호:"+rno);
   		let replyer = $('#replyer').val();
-  		
-/*   		console.log("deleterno@:"+rno);
-  		console.log(replyer); */
-  		
-  		let data = {rno:rno,
- 				replyer:replyer};
-  		
+  		let originalReplyer = $(this).data("replyer");
+  		//console.log("삭제 댓글 작성자:"+originalReplyer);
+  		//console.log("현재 로그인 아이디"+replyer);
+  		if(!replyer){
+  			alert("로그인 후 삭제 가능합니다.");
+  			return;
+  		}
+  		if(replyer != originalReplyer){
+            
+            alert("자신이 작성한 댓글만 삭제가 가능합니다");
+            getList();
+            return;
+        }
   		if(confirm("정말로 삭제하시겠습니까?")){
   			$.ajax({
 				type : "DELETE",
 				url : "/replies/"+rno,
+				data : JSON.stringify({rno:rno, replyer:replyer}),
 				contentType:"application/json",
-				data : JSON.stringify(data),
 				beforeSend:function(xhr){
 					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 				},

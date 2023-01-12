@@ -10,8 +10,10 @@ import org.springframework.security.core.userdetails.User;
 import com.google.domain.MemberVO;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class CustomUser extends User{
 	
 	private static final long serialVersionUID = 1;
