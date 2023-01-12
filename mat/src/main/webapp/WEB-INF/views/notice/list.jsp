@@ -93,10 +93,6 @@
 		</div>
 	</div>
 
-
-	<div>
-		<span>pagemaker값:[${pageMaker}]</span>
-		</div>
 		<div>
 			<form id="frm">
 				<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }">

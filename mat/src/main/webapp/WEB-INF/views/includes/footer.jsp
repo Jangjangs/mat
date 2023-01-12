@@ -26,16 +26,16 @@
 						<section class="split contact">
 							<section class="alt">
 								<h3>Address</h3>
-								<p>1234 Somewhere Road #87257<br />
-								Nashville, TN 00000-0000</p>
+								<p>포항시 북구 중흥로 255번길 10-10 나동 203호<br />
+								(죽도동, 미리내 멘션)</p>
 							</section>
 							<section>
 								<h3>Phone</h3>
-								<p><a href="#">(000) 000-0000</a></p>
+								<p><span>010-3873-3590</span></p>
 							</section>
 							<section>
 								<h3>Email</h3>
-								<p><a href="#">info@untitled.tld</a></p>
+								<p><span>jangs203@naver.com</span></p>
 							</section>
 							<section>
 								<h3>Social</h3>
