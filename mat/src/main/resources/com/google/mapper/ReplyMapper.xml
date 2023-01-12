@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.google.mapper.ReplyMapper">
+<insert id="insert">
+INSERT INTO mat.tbl_reply VALUES (null, #{bno}, #{reply}, #{replyer}, now(), now())
+</insert>
+
+<select id="getListWithPaging" resultType="com.google.domain.ReplyVO">
+SELECT * FROM mat.tbl_reply
+WHERE bno = #{bno}
+ORDER BY rno ASC
+LIMIT #{cri.skip}, #{cri.amount}
+</select>
+
+<select id="get" resultType="com.google.domain.ReplyVO">
+SELECT * FROM mat.tbl_reply WHERE rno = #{rno}
+</select>
+
+<select id="getCountByBno" resultType="int">
+SELECT count(*) FROM mat.tbl_reply
+WHERE bno = #{bno}
+</select>
+
+<update id="update">
+UPDATE mat.tbl_reply 
+SET reply= #{reply}, updateDate = now()
+WHERE rno = #{rno}
+</update>
+
+<delete id="delete">
+DELETE FROM mat.tbl_reply WHERE rno = #{rno}
+</delete>
+</mapper>

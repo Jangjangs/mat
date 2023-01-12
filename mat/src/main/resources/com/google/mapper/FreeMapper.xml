@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.google.mapper.FreeMapper">
+
+<sql id="criteria">
+	<trim prefix="AND (" suffix=") " prefixOverrides="OR">
+		<foreach item="type" collection="typeArr">
+			<trim prefix="OR">
+				<choose>
+					<when test="type == 'T'.toString()">
+						title LIKE concat('%',#{keyword},'%')
+					</when>
+					<when test="type == 'C'.toString()">
+						content LIKE concat('%',#{keyword},'%')
+					</when>
+					<when test="type == 'W'.toString()">
+						writer LIKE concat('%',#{keyword},'%')
+					</when>
+				</choose>
+			</trim>
+		</foreach>
+	</trim>
+</sql>
+
+<select id="getlist" resultType="com.google.domain.BoardVO">
+<![CDATA[
+SELECT * FROM mat.tbl_notice WHERE category='자유게시판' and bno > 0 ORDER BY bno DESC
+]]>
+</select>
+
+<insert id="insert">
+INSERT INTO mat.tbl_notice (title,content,writer,category)
+VALUES (#{title},#{content},#{writer},#{category})
+</insert>
+
+<insert id="insertLastId">
+<selectKey keyProperty="bno" order="AFTER" resultType="long">
+SELECT last_insert_id()
+</selectKey>
+INSERT INTO mat.tbl_notice (title,content,writer,category)
+VALUES (#{title},#{content},#{writer},#{category})
+</insert>
+
+<select id="get" resultType="com.google.domain.BoardVO">
+SELECT * FROM mat.tbl_notice WHERE bno = #{bno}
+</select>
+
+<update id="update">
+UPDATE mat.tbl_notice SET title=#{title}, content=#{content}, updateDate = now()
+WHERE bno = #{bno}
+</update>
+
+<delete id="delete">
+DELETE FROM mat.tbl_notice WHERE bno = #{bno}
+</delete>
+
+<select id="getListwithPaging" resultType="com.google.domain.BoardVO">
+SELECT * FROM mat.tbl_notice 
+<![CDATA[
+WHERE category='자유게시판' and bno > 0 
+]]>
+<include refid="criteria"></include>
+ORDER BY bno DESC
+LIMIT #{skip}, #{amount}
+</select>
+
+<select id="getListTotal" resultType="int">
+<![CDATA[
+SELECT count(*) FROM mat.tbl_notice WHERE category='자유게시판' and bno > 0
+]]>
+<include refid="criteria"></include>
+</select>
+
+<update id="updateHit">
+UPDATE mat.tbl_notice SET hit = hit+1
+WHERE bno = #{bno}
+</update>
+
+<update id="updateReplyCnt">
+UPDATE mat.tbl_notice SET replyCnt = replyCnt = #{amount}
+WHERE bno = #{bno}
+</update>
+</mapper>
